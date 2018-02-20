@@ -1,15 +1,23 @@
 import 'main.scss'
+
 import { IO } from 'monet'
-import { Future } from 'fluture'
-import { curry, compose, head, prop } from 'ramda'
+import { take } from 'ramda'
+import Future from 'fluture'
 
-// fetchF :: Future
-const fetchF = Future.encaseP(fetch)
+const futureFetch = Future.encaseP(fetch)
 
-// $ :: String -> IO DOM
-const $ = selector => new IO(() => document.querySelectorAll(selector))
+const safeToJSON = data => Future.tryP(() => data.json()) 
 
-// == Impure Calling Code ==
-fetchF(`https://hacker-news.firebaseio.com/v0/topstories.json`)
-    .chain(res => Future.tryP(_ => res.json()))
+const getStoryData = ids =>
+    Future.parallel(5, ids.map(id =>
+        futureFetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+            .chain(safeToJSON)))
+
+const getTopStoriesIds =
+    futureFetch('https://hacker-news.firebaseio.com/v0/topstories.json') 
+        .chain(safeToJSON)
+        .map(take(10))
+
+getTopStoriesIds
+    .chain(getStoryData)
     .fork(console.error, console.log)
