@@ -1,12 +1,15 @@
 import 'main.scss'
 import { IO } from 'monet'
-import { curry, compose, head } from 'ramda'
+import { Future } from 'fluture'
+import { curry, compose, head, prop } from 'ramda'
+
+// fetchF :: Future
+const fetchF = Future.encaseP(fetch)
 
 // $ :: String -> IO DOM
 const $ = selector => new IO(() => document.querySelectorAll(selector))
 
 // == Impure Calling Code ==
-$('.intro-heading')
-    .map(head)
-    .map(el => el.style.color = 'maroon')
-    .run()
+fetchF(`https://hacker-news.firebaseio.com/v0/topstories.json`)
+    .chain(res => Future.tryP(_ => res.json()))
+    .fork(console.error, console.log)
