@@ -21,7 +21,7 @@ const getTopStoriesIds =
         .chain(safeParseJSON)
         .map(take(10))
 
-// calling all stories ...
-getTopStoriesIds
-    .chain(getStoryData)
-    .fork(console.error, console.log)
+module.exports = {
+    getStoryData,
+    getTopStoriesIds
+}
