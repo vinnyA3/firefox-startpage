@@ -1,0 +1,19 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+  "extends": [
+    "standard"
+  ],
+	"rules": {
+		"no-unused-vars": [2, {
+				"vars": "local",
+				"args": "after-used",
+				"varsIgnorePattern": "html"
+		}]
+	}
+}
