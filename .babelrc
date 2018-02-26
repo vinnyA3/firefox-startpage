@@ -1,0 +1,12 @@
+{
+  "compact": true,
+  "filename": "babel-error.log",
+  "minified": false,
+  "presets": [
+    "env"
+  ],
+  "plugins": [
+    "syntax-jsx",
+    ["transform-react-jsx", {"pragma": "html"}]
+  ]
+}
