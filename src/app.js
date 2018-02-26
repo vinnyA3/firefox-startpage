@@ -1,27 +1,19 @@
-import 'main.scss'
-// import { IO } from 'monet'
-import { take } from 'ramda'
-import Future from 'fluture'
+import { periodic } from 'most'
+import run from '@cycle/most-run'
+import { makeDOMDriver } from '@cycle/dom'
+import { html } from 'snabbdom-jsx'
 
-// futureFetch :: Future Promise
-const futureFetch = Future.encaseP(fetch)
+function main () {
+  const timer$ = periodic(1000)
+    .scan((x, y) => x + 1, 0) /* eslint-disable-line */
 
-// safeParseJSON :: Object -> Future Rejected JSON
-const safeParseJSON = data => Future.tryP(() => data.json()) 
+  const vdom$ = timer$.map(count =>
+    <div className='container'>
+      <h1 className='heading'>Counter: {count}</h1>
+    </div>
+  )
 
-// getStoryData :: Array -> Future Array
-const getStoryData = ids =>
-    Future.parallel(5, ids.map(id =>
-        futureFetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
-            .chain(safeParseJSON)))
-
-// getTopStoriesIds :: Future
-const getTopStoriesIds =
-    futureFetch('https://hacker-news.firebaseio.com/v0/topstories.json') 
-        .chain(safeParseJSON)
-        .map(take(10))
-
-module.exports = {
-    getStoryData,
-    getTopStoriesIds
+  return { DOM: vdom$ }
 }
+
+run(main, { DOM: makeDOMDriver('#app') })
