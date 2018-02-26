@@ -13,7 +13,7 @@
 		"no-unused-vars": [2, {
 				"vars": "local",
 				"args": "after-used",
-				"varsIgnorePattern": "html"
+				"varsIgnorePattern": "html|xs"
 		}]
 	}
 }
