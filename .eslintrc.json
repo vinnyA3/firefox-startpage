@@ -9,11 +9,11 @@
   "extends": [
     "standard"
   ],
-	"rules": {
-		"no-unused-vars": [2, {
-				"vars": "local",
-				"args": "after-used",
-				"varsIgnorePattern": "html|xs"
-		}]
-	}
+  "rules": {
+    "no-unused-vars": [2, {
+    "vars": "local",
+    "args": "after-used",
+    "varsIgnorePattern": "html|xs"
+  }]
+  }
 }
