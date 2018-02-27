@@ -1,44 +1,58 @@
 import xs from 'xstream'
 import { run } from '@cycle/xstream-run'
+import { timeDriver } from '@cycle/time'
 import { makeDOMDriver } from '@cycle/dom'
 import { makeHTTPDriver } from '@cycle/http'
 import { html } from 'snabbdom-jsx'
 
-function main (sources) {
-  const getRandomUser$ = sources.DOM.select('.get-random').events('click')
-    .map(() => {
-      const randomNum = Math.round(Math.random() * 9) + 1
-      return {
-        url: 'https://jsonplaceholder.typicode.com/users/' + String(randomNum),
-        category: 'users',
-        method: 'GET'
-      }
-    })
+const githubInfoTemplate = ({ name, blog, location, public_repos }) =>
+  <div>
+    <h2>{ name }</h2>
+    <h3>{ blog }</h3>
+    <h3>{ location }</h3>
+    <h3>Public Repos: { public_repos }</h3>
+  </div>
 
-  const user$ = sources.HTTP.select('users')
+function main ({ DOM, HTTP, TIME }) {
+  const category = 'user'
+
+  const input$ = DOM.select('input').events('input')
+    .map(e => e.target.value)
+    .startWith('')
+
+  const fetchGihubUser$ = input$
+    .filter(val => val !== '')
+    .compose(TIME.debounce(600))
+    .map(user => ({
+      method: 'GET',
+      url: `https://api.github.com/users/${user}`,
+      category
+    }))
+
+  const getResult$ = HTTP.select(category)
     .flatten()
     .map(res => res.body)
     .startWith(null)
 
-  const vdom$ = user$.map(user =>
-    <div className='users'>
-      <button className='get-random'>Get random user</button>
-      { user === null ? null
-        : <div className='user-details'>
-          <h1 className='user-name'>{ user.name }</h1>
-          <h4 className='user-email'>{ user.email }</h4>
-        </div>
-      }
+  return {
+    DOM: view(getResult$),
+    HTTP: fetchGihubUser$
+  }
+}
+
+function view (input$) {
+  return input$.map(user =>
+    <div>
+      <input type='text' />
+      <ul>
+        { user !== null ? githubInfoTemplate(user) : '' }
+      </ul>
     </div>
   )
-
-  return {
-    DOM: vdom$,
-    HTTP: getRandomUser$
-  }
 }
 
 run(main, {
   DOM: makeDOMDriver('#app'),
-  HTTP: makeHTTPDriver()
+  HTTP: makeHTTPDriver(),
+  TIME: timeDriver
 })
