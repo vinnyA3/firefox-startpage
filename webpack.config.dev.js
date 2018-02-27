@@ -42,7 +42,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'index.htm'),
+      template: path.resolve(__dirname, 'public/templates/index.htm'),
       inject: 'body'
     })
   ]
