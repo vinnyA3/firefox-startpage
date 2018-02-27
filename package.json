@@ -50,6 +50,7 @@
     "@cycle/http": "^14.9.0",
     "@cycle/most-run": "^8.0.0",
     "@cycle/run": "^4.1.0",
+    "@cycle/time": "^0.13.0",
     "@cycle/xstream-run": "^4.2.0",
     "most": "^1.7.3",
     "ramda": "^0.25.0",
