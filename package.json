@@ -53,7 +53,6 @@
     "@cycle/time": "^0.13.0",
     "@cycle/xstream-run": "^4.2.0",
     "most": "^1.7.3",
-    "ramda": "^0.25.0",
-    "xstream": "^11.2.0"
+    "ramda": "^0.25.0"
   }
 }
