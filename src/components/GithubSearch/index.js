@@ -4,10 +4,12 @@ import view from './view'
 
 export default function main (sources) {
   const actions = intent(sources.DOM)
-  const state$ = model(actions)
-  const vdom$ = view(state$)
+  const state$ = model(actions, sources.HTTP)
+  const { userData$ } = state$ // destruct userData stream
+  const vdom$ = view(userData$)
 
   return {
-    DOM: vdom$
+    DOM: vdom$,
+    HTTP: state$.getGithubUserData$
   }
 }

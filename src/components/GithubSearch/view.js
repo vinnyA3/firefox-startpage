@@ -1,15 +1,19 @@
 import { html } from 'snabbdom-jsx'
 
 export default function view (state$) {
-  return state$.map(word =>
+  return state$.map(user =>
     <div>
-      <input type='text' />
-      <h2>{ word }</h2>
-      <ul>
-        <li>(Github username)</li>
-        <li>(Github location)</li>
-        <li>(Github public_repos)</li>
-      </ul>
+      <h1>Github User Search</h1>
+      <input type='text' placeholder='Search...'/>
+      {
+        user === null ? ''
+          : user.msg ? user.msg
+            : <ul>
+              <li>{ user.name }</li>
+              <li>Location: { user.location }</li>
+              <li>Public Repo: { user.public_repos }</li>
+            </ul>
+      }
     </div>
   )
 }
